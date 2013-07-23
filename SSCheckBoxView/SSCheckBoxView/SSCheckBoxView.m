@@ -40,6 +40,42 @@ static const CGFloat kHeight = 36.0f;
 @synthesize style, checked, enabled;
 @synthesize stateChangedBlock;
 
+
+-(id) initWithCoder:(NSCoder *)aDecoder
+{
+  if (self = [super initWithCoder:aDecoder])
+  {
+    self.stateChangedBlock = nil;
+    delegate = nil;
+    style = kSSCheckBoxViewStyleDark;
+    checked = NO;
+    self.enabled = YES;
+    
+    self.userInteractionEnabled = YES;
+    self.backgroundColor = [UIColor clearColor];
+    
+    CGRect labelFrame = CGRectMake(32.0f, 7.0f, self.frame.size.width - 32, 20.0f);
+    UILabel *l = [[UILabel alloc] initWithFrame:labelFrame];
+    l.textAlignment = UITextAlignmentLeft;
+    l.backgroundColor = [UIColor clearColor];
+    l.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
+    l.textColor = RgbHex2UIColor(0x2E, 0x2E, 0x2E);
+    l.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+    l.shadowColor = [UIColor whiteColor];
+    l.shadowOffset = CGSizeMake(0, 1);
+    [self addSubview:l];
+    textLabel = l;
+    
+    UIImage *img = [self checkBoxImageForStyle:style checked:checked];
+    CGRect imageViewFrame = [self imageViewFrameForCheckBoxImage:img];
+    UIImageView *iv = [[UIImageView alloc] initWithFrame:imageViewFrame];
+    iv.image = img;
+    [self addSubview:iv];
+    checkBoxImageView = iv;
+  }
+  return self;
+}
+
 - (id) initWithFrame:(CGRect)frame
                style:(SSCheckBoxViewStyle)aStyle
              checked:(BOOL)aChecked
@@ -49,7 +85,6 @@ static const CGFloat kHeight = 36.0f;
         return self;
     }
 
-    stateChangedSelector = nil;
     self.stateChangedBlock = nil;
     delegate = nil;
     style = aStyle;
@@ -81,13 +116,6 @@ static const CGFloat kHeight = 36.0f;
     return self;
 }
 
-- (void) dealloc
-{
-    self.stateChangedBlock = nil;
-    [checkBoxImageView release];
-    [textLabel release];
-    [super dealloc];
-}
 
 - (void) setEnabled:(BOOL)isEnabled
 {
@@ -112,12 +140,6 @@ static const CGFloat kHeight = 36.0f;
     [self updateCheckBoxImage];
 }
 
-- (void) setStateChangedTarget:(id<NSObject>)target
-                      selector:(SEL)selector
-{
-    delegate = target;
-    stateChangedSelector = selector;
-}
 
 
 #pragma mark -
@@ -166,10 +188,7 @@ static const CGFloat kHeight = 36.0f;
         if (CGRectContainsPoint(validTouchArea, point)) {
             checked = !checked;
             [self updateCheckBoxImage];
-            if (delegate && stateChangedSelector) {
-                [delegate performSelector:stateChangedSelector withObject:self];
-            }
-            else if (stateChangedBlock) {
+            if (stateChangedBlock) {
                 stateChangedBlock(self);
             }
         }

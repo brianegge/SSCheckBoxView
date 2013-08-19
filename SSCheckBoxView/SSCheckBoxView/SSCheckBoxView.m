@@ -45,9 +45,9 @@ static const CGFloat kHeight = 36.0f;
 {
   if (self = [super initWithCoder:aDecoder])
   {
+    self.translatesAutoresizingMaskIntoConstraints = NO;
     self.stateChangedBlock = nil;
-    delegate = nil;
-    style = kSSCheckBoxViewStyleDark;
+    style = kSSCheckBoxViewStyleBoost;
     checked = NO;
     self.enabled = YES;
     
@@ -56,7 +56,8 @@ static const CGFloat kHeight = 36.0f;
     
     CGRect labelFrame = CGRectMake(32.0f, 7.0f, self.frame.size.width - 32, 20.0f);
     UILabel *l = [[UILabel alloc] initWithFrame:labelFrame];
-    l.textAlignment = UITextAlignmentLeft;
+    l.translatesAutoresizingMaskIntoConstraints = NO;
+    l.textAlignment = NSTextAlignmentLeft;
     l.backgroundColor = [UIColor clearColor];
     l.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
     l.textColor = RgbHex2UIColor(0x2E, 0x2E, 0x2E);
@@ -69,9 +70,14 @@ static const CGFloat kHeight = 36.0f;
     UIImage *img = [self checkBoxImageForStyle:style checked:checked];
     CGRect imageViewFrame = [self imageViewFrameForCheckBoxImage:img];
     UIImageView *iv = [[UIImageView alloc] initWithFrame:imageViewFrame];
+    iv.translatesAutoresizingMaskIntoConstraints = NO;
     iv.image = img;
     [self addSubview:iv];
     checkBoxImageView = iv;
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:iv attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeading multiplier:1.0 constant:0.0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:textLabel attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:checkBoxImageView attribute:NSLayoutAttributeTrailing multiplier:1.0 constant:5.0]];
+
+    
   }
   return self;
 }
@@ -86,17 +92,16 @@ static const CGFloat kHeight = 36.0f;
     }
 
     self.stateChangedBlock = nil;
-    delegate = nil;
     style = aStyle;
     checked = aChecked;
     self.enabled = YES;
 
     self.userInteractionEnabled = YES;
-    self.backgroundColor = [UIColor clearColor];
+    //self.backgroundColor = [UIColor clearColor];
 
     CGRect labelFrame = CGRectMake(32.0f, 7.0f, self.frame.size.width - 32, 20.0f);
     UILabel *l = [[UILabel alloc] initWithFrame:labelFrame];
-    l.textAlignment = UITextAlignmentLeft;
+    l.textAlignment = NSTextAlignmentLeft;
     l.backgroundColor = [UIColor clearColor];
     l.font = [UIFont fontWithName:@"Helvetica-Bold" size:15];
     l.textColor = RgbHex2UIColor(0x2E, 0x2E, 0x2E);
@@ -115,7 +120,6 @@ static const CGFloat kHeight = 36.0f;
 
     return self;
 }
-
 
 - (void) setEnabled:(BOOL)isEnabled
 {
@@ -226,7 +230,10 @@ static const CGFloat kHeight = 36.0f;
             break;
         case kSSCheckBoxViewStyleMono:
             imageName = @"cb_mono_";
-            break;
+        break;
+      case kSSCheckBoxViewStyleBoost:
+        imageName = @"bm_";
+        break;
         default:
             return nil;
     }

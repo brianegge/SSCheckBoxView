@@ -31,6 +31,7 @@ typedef enum SSCheckBoxViewStyle_ {
     kSSCheckBoxViewStyleGlossy,
     kSSCheckBoxViewStyleGreen,
     kSSCheckBoxViewStyleMono,
+    kSSCheckBoxViewStyleBoost,
 
     kSSCheckBoxViewStylesCount
 } SSCheckBoxViewStyle;
@@ -48,7 +49,7 @@ typedef enum SSCheckBoxViewStyle_ {
     // this method would be in the following form:
     // - (void) checkBoxViewChangedState:(SSCheckBoxView *)cbv;
     //SSCheckBoxCallback stateChangedSelector;
-    id<NSObject> delegate;
+    //id<NSObject> delegate;
 
     void (^stateChangedBlock)(SSCheckBoxView *cbv);
 }

@@ -138,6 +138,11 @@ static const CGFloat kHeight = 36.0f;
     [textLabel setText:text];
 }
 
+- (NSString*)text
+{
+  return textLabel.text;
+}
+
 - (void) setChecked:(BOOL)isChecked
 {
     checked = isChecked;
